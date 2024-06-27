@@ -49,7 +49,7 @@ Para desplegar el proyecto en tu entorno local para desarrollo y pruebas, sigue 
 1. Clona el repositorio:
 
 ```bash
-git clone https://github.com/PT-Chatbot/
+git clone https://github.com/PT-Chatbot/embeddings-chatbot.git
 ```
 
 2. Navega al directorio del proyecto:
@@ -102,5 +102,5 @@ Las contribuciones son bienvenidas y ayudan a mejorar y expandir este proyecto. 
 © 2024 Marcos Damián Pool Canul.
 
 ```bash
-git clone https://github.com/marcosd59/asesor-chatbot.git
+git clone https://github.com/PT-Chatbot/embeddings-chatbot.git
 ```
