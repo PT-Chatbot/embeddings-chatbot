@@ -24,7 +24,7 @@
 		const response = await fetch(`${PUBLIC_PROCESS_FILES_SERVER}/query?text=${query}`, {
 			method: 'GET'
 		});
-		console.log('test');
+		console.log('response: ', response);
 		let result: QueryResult = await response.json();
 		documents = result.documents[0];
 		metadatas = result.metadatas[0];
@@ -80,8 +80,9 @@
 
 <div class="flex justify-center items-center p-4">
 	<div class="m-11 card h-full w-3/4">
-		<div class="p-4 md:p-10">
-			<h1>🤖 Bot Unicaribe</h1>
+		<div class="p-4 md:p-10 tarjeta">
+			<div class="centro">
+				<h1>🤖 Bot Unicaribe</h1>
 				<br />
 				<h3 class="mb-3">El asesor de la Universidad del Caribe!</h3>
 			</div>
@@ -90,25 +91,25 @@
 				<input
 					class="input text-xl"
 					type="text"
-					placeholder="your question here"
+					placeholder="Ej. ¿Cuál es el horario de la universidad?"
 					bind:value={query}
 				/>
 				<button
 					type="button"
-					class="btn variant-filled-secondary w-1/5 ml-4 text-xl"
-					on:click={queryEmbeddings}>Preguntar: </button
+					class="btn variant-filled-secondary w-1/5 ml-4 text-xl btn-responsive"
+					on:click={queryEmbeddings}>Preguntar</button
 				>
 			</div>
 
 			{#if loading}
-				<div class="p-8">
-					Searching...<br />
+				<div class="p-8" style="color: white;">
+					Pensando...<br />
 					<ProgressBar height="h-3" meter="bg-warning-500" />
 				</div>
 			{:else}
 				{#if parsedTextBlocks.length > 0}
 					<div>
-						<h3 class="text-xxl mb-2 mt-6">Respuesta: </h3>
+						<h3 class="text-xxl mb-2 mt-6">Respuesta</h3>
 						<div class="flex flex-col rounded-[16px] bg-tertiary-500 p-4">
 							{#each parsedTextBlocks as textBlock}
 								{#if textBlock.isCodeBlock}
@@ -126,7 +127,7 @@
 						{#each documents as document, i}
 							<div class="flex flex-col">
 								<CodeBlock language="markdown" code={document} />
-								<p class="mt-2">Archivo: {metadatas[i].file_name}</p>
+								<p class="mt-2">Archivo Fuente: {metadatas[i].file_name}</p>
 							</div>
 							<br />
 						{/each}
@@ -136,3 +137,26 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.tarjeta {
+		background-color: #212121;
+	}
+
+	h1,
+	h3,
+	p {
+		color: white;
+	}
+
+	.centro {
+		text-align: center;
+	}
+
+	@media (max-width: 600px) {
+		.btn-responsive {
+			font-size: 0.575rem;
+			padding: 0.5rem 1rem;
+		}
+	}
+</style>
