@@ -6,9 +6,7 @@ document_id = 1
 
 
 def process_files(documents):
-    chroma_client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet",
-                                             persist_directory="local_db"
-                                             ))
+    chroma_client = chromadb.PersistentClient(path="local_db")
     collection = chroma_client.get_or_create_collection(name="my_collection")
 
     for file in documents:
@@ -17,7 +15,6 @@ def process_files(documents):
         chunks = split_text(markdown_text)
         document_title = get_title(markdown_text)
         generate_embeddings(chunks, document_title, file.filename, collection)
-    chroma_client.persist()
 
 
 def generate_embeddings(chunks, document_title, file_name, collection):
@@ -40,7 +37,7 @@ def get_title(file):
         title = match.group(1)
         return title
     else:
-        " "
+        return " "
 
 
 def split_text(file):
@@ -49,9 +46,7 @@ def split_text(file):
 
 
 def query_collection(query):
-    chroma_client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet",
-                                             persist_directory="local_db"
-                                             ))
+    chroma_client = chromadb.PersistentClient(path="local_db")
     collection = chroma_client.get_or_create_collection(name="my_collection")
     return collection.query(
         query_texts=[query],
