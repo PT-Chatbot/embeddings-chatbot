@@ -55,7 +55,7 @@ git clone https://github.com/PT-Chatbot/embeddings-chatbot.git
 2. Navega al directorio del proyecto:
 
 ```bash
-cd docsbot/frontend
+cd embeddings-chatbot/frontend
 ```
 
 3. Instala las dependencias:
