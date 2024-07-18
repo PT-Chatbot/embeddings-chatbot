@@ -1,53 +1,72 @@
 <script lang="ts">
+	import { FileDropzone, ProgressBar } from '@skeletonlabs/skeleton';
+	import { PUBLIC_PROCESS_FILES_SERVER } from '$env/static/public';
 	import { goto } from '$app/navigation';
+
+	let files: FileList;
+	let processing = false;
+	let error = false;
+
+	function onChangeHandler(e: Event): void {
+		files = files;
+	}
+
+	async function startProcessing(event: Event) {
+		processing = true;
+		const formEl = event.target as HTMLFormElement;
+		const data = new FormData(formEl);
+		const response = await fetch(`${PUBLIC_PROCESS_FILES_SERVER}/process`, {
+			method: 'POST',
+			body: data
+		});
+		let result = await response.json();
+		if (result && result.success) {
+			goto('/bot');
+		} else {
+			error = true;
+		}
+	}
 </script>
 
 <div class="flex justify-center items-center p-4">
 	<div class="m-11 card h-full w-3/4">
-		<div class="p-4 md:p-10 tarjeta">
-			<h1>🤖 Universidad del Caribe</h1>
-			<h3 class="mt-6">Bienvenido</h3>
-			<p class="mt-6">
-				Este es el asistente virtual de la Universidad del Caribe, aquí podrás encontrar información
-				sobre la universidad, carreras, servicios, entre otros.
-			</p>
-			<button class="btn btn-primary mt-6" on:click={() => goto('/bot')}
-				>Ir a la página del bot</button
-			>
+		<div class="p-4 md:p-10">
+			<h1>🤖 Unicaribe Chatbot</h1>
+			<h3 class="mt-6">Sube tus documentos:</h3>
+			<form method="POST" on:submit|preventDefault={startProcessing} class="w-full">
+				<div class="flex flex-col justify-center items-center">
+					<FileDropzone name="documents" multiple bind:files on:change={onChangeHandler} />
+					{#if files}
+						<ol class="list w-full">
+							{#each Array.from(files) as document, i}
+								<li>
+									<span class="badge-icon p-4 variant-soft-primary">{i + 1}</span>
+									<span class="text-xl">{document.name}</span>
+								</li>
+							{/each}
+						</ol>
+						<button class="w-2/4 btn variant-filled-secondary btn-lg mt-4" disabled={processing}
+							>Crear embeddings</button
+						>
+					{/if}
+				</div>
+			</form>
+			{#if processing}
+				<div class="p-8">
+					<p>Procesando...</p>
+					<ProgressBar height="h-3" meter="bg-warning-500" />
+				</div>
+			{/if}
+			{#if error}
+				<aside class="alert variant-filled-error">
+					<!-- Icon -->
+					<div>🚨</div>
+					<!-- Message -->
+					<div class="alert-message">
+						<h3>Error, esta mal en algo</h3>
+					</div>
+				</aside>
+			{/if}
 		</div>
 	</div>
 </div>
-
-<footer>
-	<p class="text-center text-gray-500 text-sm mt-4">
-		© 2024 Universidad del Caribe. Todos los derechos reservados.
-	</p>
-</footer>
-
-<style>
-	.tarjeta {
-		background-color: #212121;
-	}
-	h1,
-	h3,
-	p,
-	button {
-		color: white;
-	}
-	button {
-		background-color: #1d4ed8;
-		border: none;
-		padding: 10px 20px;
-		border-radius: 5px;
-		font-size: 16px;
-		cursor: pointer;
-		transition: background-color 0.3s ease;
-	}
-	button:hover {
-		background-color: #1e40af;
-	}
-	button:active {
-		background-color: #1d4ed8;
-		transform: scale(0.98);
-	}
-</style>
